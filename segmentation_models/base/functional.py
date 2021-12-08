@@ -86,9 +86,9 @@ def iou_score(gt, pr, class_weights=1., class_indexes=None, smooth=SMOOTH, per_i
     backend = kwargs['backend']
 
     gt, pr = gather_channels(gt, pr, indexes=class_indexes, **kwargs)
-    max_val = backend.reduce_max(pr, axis=-1,keepdims=True)
-    cond = backend.math.greater_equal(pr, max_val)
-    pr = backend.where(cond, tf.ones_like(pr), backend.zeros_like(pr))
+    max_val = backend.max(pr, axis=-1,keepdims=True)
+    cond = backend.greater(pr, max_val)
+    pr = backend.where(cond, backend.ones_like(pr), backend.zeros_like(pr))
     pr = round_if_needed(pr, threshold, **kwargs)
     axes = get_reduce_axes(per_image, **kwargs)
 
