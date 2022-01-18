@@ -141,6 +141,9 @@ def f_score(gt, pr, beta=1, class_weights=1, class_indexes=None, smooth=SMOOTH, 
     backend = kwargs['backend']
 
     gt, pr = gather_channels(gt, pr, indexes=class_indexes, **kwargs)
+    max_val = backend.max(pr, axis=-1,keepdims=True)
+    cond = backend.greater_equal(pr, max_val)
+    pr = backend.switch(cond, backend.ones_like(pr),backend.zeros_like(pr))
     pr = round_if_needed(pr, threshold, **kwargs)
     axes = get_reduce_axes(per_image, **kwargs)
 
@@ -182,6 +185,9 @@ def precision(gt, pr, class_weights=1, class_indexes=None, smooth=SMOOTH, per_im
     backend = kwargs['backend']
 
     gt, pr = gather_channels(gt, pr, indexes=class_indexes, **kwargs)
+    max_val = backend.max(pr, axis=-1,keepdims=True)
+    cond = backend.greater_equal(pr, max_val)
+    pr = backend.switch(cond, backend.ones_like(pr),backend.zeros_like(pr))
     pr = round_if_needed(pr, threshold, **kwargs)
     axes = get_reduce_axes(per_image, **kwargs)
 
@@ -221,6 +227,9 @@ def recall(gt, pr, class_weights=1, class_indexes=None, smooth=SMOOTH, per_image
     backend = kwargs['backend']
 
     gt, pr = gather_channels(gt, pr, indexes=class_indexes, **kwargs)
+    max_val = backend.max(pr, axis=-1,keepdims=True)
+    cond = backend.greater_equal(pr, max_val)
+    pr = backend.switch(cond, backend.ones_like(pr),backend.zeros_like(pr))
     pr = round_if_needed(pr, threshold, **kwargs)
     axes = get_reduce_axes(per_image, **kwargs)
 
